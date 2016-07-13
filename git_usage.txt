@@ -1,0 +1,229 @@
+Most basic workflow:
+   $ git pull
+   <Make changes>
+   $ git status
+   $ git commit -a -m "Insert commit comment here"
+   $ git pull
+   $ git push
+
+Common Commands (Quick Ref)
+-- push file from local to remote
+   $ git push
+-- get latest from remote
+   $ git pull
+-- check which files have been changed and whether you have made commits
+   $ git status
+-- see all the commits that have been made 
+   $ hist
+-- commit staged changes to local git repository (same as alias git ci) 
+   $ git commit -m "comment here"
+-- stage files for commit
+   $ git add <filenames>
+-- add all unstaged changes, then commit to local git repository
+   $ git commit -a -m "comment here"    
+-- fix merge conflicts
+   git provides filenames of files not automatically merged
+   Edit those filenames.  Search for <<<<<< to see areas that need edits
+   Select which changes to incorporate and delete others in each file.  Save files
+   $ git commit
+   $ git push
+   - If the conflict is due to a file being removed, you will have to type 
+      "git add <filename>" or "git rm <filename>" to resolve the conflict, then do:
+      git commit
+      git push
+   - If the conflict is in a binary file (or you know you want to just keep one of the files), use either:
+      If you know you just want the file from the branch you are merging in:
+      $ git checkout --theirs path/to/conflicted-file.txt 
+      or if you know you want your version (not the one being merged in):
+      $ git checkout --ours path/to/conflicted-file.txt    
+-- revert back to prior version (of a filename)
+   $ git hist <filename>
+   * fcc9989 2015-04-24 | delay values in progress of updating before cntrl_1_4 [Steve Reid]
+   * b16dc85 2015-04-02 | Initial source checkin [Steve Grandpre]
+   $ git checkout fcc9989^ <filename>
+-- revert (undo) the changes that were made in a specific commit:
+   $ git revert <Commit number>
+-- Add files to revision control
+   $ git add <filename or dir/*>
+   
+Tips & Tricks
+-- Create bash alias in c/users/<username>/.bashrc
+   $ alias <aliasname>='cd /c/rest/of/the/path'
+-- Interactively stage specific changes
+   $ git add -p [filename]
+   $ git add -u -p 
+      - all unstaged files (-u)
+-- Check if a pull is needed
+   $ git remote -v update
+-- List untracked files
+   $ git ls-files --others --exclude-standard [pathname]
+      -or- 
+   $ git status -u normal <path to directory>
+-- List tracked files
+   $ git ls-files [pathname]
+-- List filenames only that changed in a specific commit
+   $ git diff-tree --name-status -r <commit hash>
+-- View the files changed in a commit 
+   $ git show <start_commit>[..<end_commit>]
+-- Copy a previous version of a file into a new filename
+   $ git show HEAD^:logic_analyzer/redesign/initialization_PARSED.txt > logic_analyzer/redesign/initialization_PARSED_old.txt
+-- Revert changes to a single file made in a single commit:
+   $ git show <commit> -- <path> | git apply -R
+-- Remove a directory from tracking while leaving it in the filesystem:
+   $ git rm --cached -r <dir>
+   - For a file:
+   $ git rm --cached <file>
+-- Show only filenames changed in a particular commit:
+   $ git show --name-only <commit hash>
+-- Show commits for a specific file
+   $ git hist -- <file> 
+-- Show only files that are being ignored: 
+   $ git ls-files --others -i --exclude-standard
+-- Tags:
+   Create annotated tag:
+   $ git tag -a -m <msg> <tagname>
+   Push reachable annotated tags:
+   $ git push --follow-tags
+-- Show all changes in all commits for a specific file:
+   $ git log -p --word-diff=color <filename>
+-- "git push" shows "fatal: bad object <sha>" error and fails to push
+   - try doing:
+   $ git fsck --full
+   - for push, use:
+   $ git push -v
+   - can also try repacking objects:
+   $ git repack -a -d
+   - If none of that works you can pull in pack files from a good repo:
+      - http://git.661346.n2.nabble.com/quot-failed-to-read-delta-base-object-at-quot-td781956.html
+      - do "git repack -a -d" afterwards
+-- If files have gotten their line endings messed up:
+   $ dos2unix <filename>
+
+Working with blobs/objects:
+-- 
+   $ git read-tree <SHA>
+-- Show object type
+   $ git cat-file -t <SHA>
+-- Pretty print object's contents
+   $ git cat-file -p <SHA>
+   
+
+Working with branches
+-- Create a new branch:
+   - First check out the branch you want to use as a starting point (probably master):
+   $ git checkout <starting_branch> 
+   - Then create and check out your new branch
+   $ git checkout -b <newbranch>
+-- Show branches (indicates which branch you're on):
+   $ git branch
+-- Switch between branches:
+   $ git checkout <newbranch>
+-- Update branch with changes made in master branch:
+   $ git checkout <newbranch>
+   $ git merge master
+
+-- example:
+   To Switch to thermalString branch:
+   $ git checkout thermalString
+   Update the thermalString branch with the changes you made to the master branch:
+   $ git merge master
+   switch back to master:
+   $ git checkout master
+
+-- If you want a new branch to be tracked in the remote repository:
+   - push new branch to remote repository for first time:
+      $ git push origin <newbranch>
+   - Set upstream branch:
+      $ git branch -u origin/<newbranch> <newbranch>
+   - pull new branch from remote repository for first time on a different machine:
+      $ git pull
+      $ git checkout <newbranch>
+
+-- Delete feature branch after it has been merged back in:
+   $ git branch -d <newbranch>
+-- Delete branch that is being tracked remotely:
+   $ git branch -d <newbranch>
+   $ git push origin --delete <newbranch>
+   - other users must remove their local tracking branches with:
+      $ git remote prune origin
+      $ git branch -d <newbranch>
+
+-- Rename a remotely tracked branch:
+   - Make a new branch in the remote repository, based off the old branch:
+      $ git push origin <oldname>:<newname>
+   - Check out new branch to create a local copy:
+      $ git checkout <newname> 
+   - Push to remote branch:
+      $ git push -f origin 
+   - delete old branch:
+      $ git push origin --delete <oldname> 
+      $ git branch -d <oldname> 
+   - Other users must update their local branch:
+      $ git pull 
+      $ git branch -d <oldname> 
+      $ git remote prune origin 
+      $ git checkout <newname>
+
+
+Setup
+--Configuration
+   Configure git to hide untracked files in "git status":
+   git config --global status.showuntrackedfiles no
+
+--Setup on shared drive:
+   - Create a new shared drive repo from existing directory structure:
+      - Create a bare repo on the git server
+         $ cd //us/ids/functions/engineering/edd/git/
+         $ mkdir project.git
+         $ cd project.git
+         $ git init --bare
+      - Create local repository
+         $ cd c:\path\top_level_project_folder
+         $ git init
+         - Add any unwanted folders or files to .gitignore
+            $ echo extra_folder/ >> .gitignore
+         $ git add .
+         $ git commit -m "initial commit"
+         $ git remote add origin file:////us/ids/functions/engineering/edd/git/project.git
+         $ git push --set-upstream origin master
+   - Clone shared drive repo on another computer:
+      $ git clone file:////us/ids/functions/engineering/edd/git/<repo>[.git if empty repository]
+   - Clone shared drive repo on another computer with existing directory:
+      cd to existing directory
+      $ git init 
+      $ git remote add origin file:////us/ids/functions/engineering/edd/git/<repo>[.git if empty repository]
+      $ git fetch origin 
+      $ git checkout -f -t origin/master 
+
+
+Feature branch workflow 
+This workflow is intended to allow the implementation of many features/changes, any of which might be approved to be put into a future build.
+
+1) Create a new branch (a_feature_branch) off of the most recently released code (master)
+   $ git checkout master
+   $ git checkout -b a_feature_branch
+
+2) Make that branch available to other developers
+   - push new branch to remote repository for first time:
+      $ git push origin a_feature_branch
+   - Set upstream branch:
+      $ git branch -u origin/a_feature_branch a_feature_branch
+   - NOTE - other developers will have to checkout the new branch before it will appear in "git branch" by entering "git checkout a_feature_branch"
+
+3) Develop new feature in that branch (a_feature_branch)
+   $ git commit -am "Added a new feature"
+
+4) Merge new feature branch (a_feature_branch) into staging branch (staging)
+   $ git checkout staging
+   $ git merge a_feature_branch
+
+5) Ensure that staging branch compiles/synthesizes with no errors
+   - In a perfect world, run simulation regression tests on staging branch
+
+6) When that feature is approved to be added to the next PDM release, merge it (a_feature_branch) into the release branch (117_changes)
+   $ git checkout 117_changes
+   $ git merge a_feature_branch
+
+7) When release goes out to PDM, merge release branch (117_changes) to master  
+   $ git checkout master
+   $ git merge 117_changes
