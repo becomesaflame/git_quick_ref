@@ -199,30 +199,30 @@ Setup
 Feature branch workflow 
 This workflow is intended to allow the implementation of many features/changes, any of which might be approved to be put into a future build.
 
-1) Create a new branch (a_feature_branch) off of the most recently released code (master)
+1) Create a new branch with prefix "feature/" (feature/a_feature_branch) off of the most recently released code (master)
    $ git checkout master
-   $ git checkout -b a_feature_branch
+   $ git checkout -b feature/a_feature_branch
 
 2) Make that branch available to other developers
    - push new branch to remote repository for first time:
-      $ git push origin a_feature_branch
+      $ git push origin feature/a_feature_branch
    - Set upstream branch:
-      $ git branch -u origin/a_feature_branch a_feature_branch
-   - NOTE - other developers will have to checkout the new branch before it will appear in "git branch" by entering "git checkout a_feature_branch"
+      $ git branch -u origin/feature/a_feature_branch feature/a_feature_branch
+   - NOTE - other developers will have to checkout the new branch before it will appear in "git branch" by entering "git checkout feature/a_feature_branch"
 
-3) Develop new feature in that branch (a_feature_branch)
+3) Develop new feature in that branch (feature/a_feature_branch)
    $ git commit -am "Added a new feature"
 
-4) Merge new feature branch (a_feature_branch) into staging branch (staging)
+4) Merge new feature branch (feature/a_feature_branch) into staging branch (staging)
    $ git checkout staging
-   $ git merge a_feature_branch
+   $ git merge feature/a_feature_branch
 
 5) Ensure that staging branch compiles/synthesizes with no errors
    - In a perfect world, run simulation regression tests on staging branch
 
-6) When that feature is approved to be added to the next PDM release, merge it (a_feature_branch) into the release branch (117_changes)
+6) When that feature is approved to be added to the next PDM release, merge it (feature/a_feature_branch) into the release branch (117_changes)
    $ git checkout 117_changes
-   $ git merge a_feature_branch
+   $ git merge feature/a_feature_branch
 
 7) When release goes out to PDM, merge release branch (117_changes) to master  
    $ git checkout master
