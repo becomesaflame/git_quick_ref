@@ -79,11 +79,6 @@ Tips & Tricks
    $ git hist -- <file> 
 -- Show only files that are being ignored: 
    $ git ls-files --others -i --exclude-standard
--- Tags:
-   Create annotated tag:
-   $ git tag -a -m <msg> <tagname>
-   Push reachable annotated tags:
-   $ git push --follow-tags
 -- Show all changes in all commits for a specific file:
    $ git log -p --word-diff=color <filename>
 -- "git push" shows "fatal: bad object <sha>" error and fails to push
@@ -98,6 +93,13 @@ Tips & Tricks
       - do "git repack -a -d" afterwards
 -- If files have gotten their line endings messed up:
    $ dos2unix <filename>
+
+Tags:
+-- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
+   Create annotated tag:
+   $ git tag -a <tagname> -m <msg> 
+   Push annotated tags:
+   $ git push --follow-tags
 
 Working with blobs/objects:
 -- 
@@ -200,6 +202,7 @@ Feature branch workflow
 This workflow is intended to allow the implementation of many features/changes, any of which might be approved to be put into a future build.
 
 1) Create a new branch with prefix "feature/" (feature/a_feature_branch) off of the most recently released code (master)
+   - if it is a safety critical fix, prefix the branch name with "feature/SAFETY_CRITICAL/"
    $ git checkout master
    $ git checkout -b feature/a_feature_branch
 
@@ -220,10 +223,10 @@ This workflow is intended to allow the implementation of many features/changes, 
 5) Ensure that staging branch compiles/synthesizes with no errors
    - In a perfect world, run simulation regression tests on staging branch
 
-6) When that feature is approved to be added to the next PDM release, merge it (feature/a_feature_branch) into the release branch (117_changes)
-   $ git checkout 117_changes
+6) When that feature is approved to be added to the next PDM release, merge it (feature/a_feature_branch) into the release branch with prefix "release/" (release/117)
+   $ git checkout release/117
    $ git merge feature/a_feature_branch
 
-7) When release goes out to PDM, merge release branch (117_changes) to master  
+7) When release goes out to PDM, merge release branch (release/117) to master  
    $ git checkout master
-   $ git merge 117_changes
+   $ git merge release/117
