@@ -1,0 +1,228 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~         Git Basics          ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+This is a brief guide to git usage. 
+It descibes setup and guidelines for the git repository for AIC.   
+
+This is not intended to be a comprehensive git tutorial, but it will provide
+and serve as a reminder of the basic commands needed to set up and use git. It 
+is highly recommended that you familiarize yourself with the basic concepts of 
+git in addition to this guide. See the "References" section at the end for
+recommended tutorials and guides. 
+
+Bash shell prompts are indicated by "$" at the beginning of a line. 
+ 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Initial Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In order to clone the AIC git repo to your local machine, open a git bash shell
+and enter the following commands:
+
+$ git -c http.sslVerify=false clone https://prc-xilinx/git/aic_firmware.git
+$ git config http.sslVerify false
+
+This only needs to be done once. After you have cloned the repo, you will have
+a local copy of the repository. You can make changes to the files in your
+local repo, then commit those changes and push them back to the remote repo
+for other people to get. 
+
+Note:
+If your are familiar with git, you might be wondering what this extra
+sslVerify stuff is. The AIC git server uses a self signed certificate. This
+will cause git to throw an error by default. The "-c http.sslVerify=false"
+flag forces the command to ignore that error, and the git config command tells
+git to allow self signed certificates for this repository (and only this
+repository).  
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Getting updates from the remote repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If someone else has made updates to the remote repository, you will need to
+update your local repsotory with those changes before you can see them. In
+order to do this use:
+
+$ git pull
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Seeing what changes you have made
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When you modify files in your local repo, you are making changes to your git
+workspace. To list files that have been updated since the last commit, enter:
+
+$ git status
+
+
+If you want to see a detailed printout of all of the uncommitted changes in 
+your workspace, use:
+
+$ git diff
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Committing changes to your local repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+After you have made a change in your workspace you can commit that change to
+revision control using the following command. "message" should be some brief
+description of the change. 
+
+$ git commit -am "message"
+
+Note:
+Remember than in git, you commit a change that often spans multiple files.
+This is conceptually different from a system like ClearCase where you check in
+individual files. Commits in git should be discrete changes to the code, such
+as fixing a bug or adding a feature, rather than lumping a bunch of changes
+into one commit. It is easy to do things like revert commits, view commits, or 
+merge commits between branches in git. 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Viewing previous commits
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Git has a built in command to view the history of commits in a repo, but its
+syntax is complicated and verbose. Most git users set an alias so that all
+they have to do is type "git hist" to see a nicely formatted printout of all
+commits across different branches. 
+
+To set your "git hist" alias, copy and paste the following command. You only
+need to do this once. 
+
+$ git config --global alias.hist "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit --date=relative --all"
+
+After you have set that alias, you can check your commit history using:
+
+$ git hist
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Publishing changes in your local repo to the remote repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Before other people can see changes that you have committed, you need to push
+your commits to the remote repository. You can do this using:
+
+$ git push
+
+If someone else has pushed changes that you don't have yet to the remote
+repository, your push will fail. All you have to do in this case is pull in
+the changes in the remote repo and then do your push.
+
+$ git pull
+$ git push
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Resolving conflicts 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sometimes, when you pull in commits from the remote repo, you will encounter a
+merge conflict. The automatic merging built into git is quite good, but if you
+and someone else have both modified the same part of the same file git will
+not know which version to use. If this happens, git will report a merge
+conflict and you will have to manually update the file. 
+
+Git will list the files that have merge conflicts. The conflicting sections in
+those files will be marked with "<<<<<<<" and ">>>>>>>". The code before the
+"=======" is your change, and the code after the "======" is the other
+person's change. Clean up the file to remove the unwanted code and the markers
+that git added in each file that contains conflicts. Remember that there can
+be multiple conflicts in a file. 
+
+After you have edited the conflicted files so that they contain the updated
+code that you want, tell git that the conflict in that file is resolved with:
+
+$ git add path/to/your/file 
+
+Once all the conflicts are fixed and added, finish the merge with:
+
+$ git commit
+
+Git will open a text editor to give you a chance to edit the commit message.
+Leave the default message and save and exit to finish the merge. By default
+git uses vim for its text editor - use :wq to save and quit.  
+
+
+
+Example:
+You changed the led_out vector in source/module.vhd to be 12 bits, but someone
+else changed it to be 8 bits. 
+
+Merge conflict:
+
+  signal start_trig  : std_logic;
+<<<<<<< HEAD
+  signal led_out     : std_logic_vector(11 downto 0);
+=======
+  signal led_out     : std_logic_vector(7 downto 0);
+>>>>>>> master
+  signal fault_sum   : std_logic;
+
+
+Edit to fix conflict:
+
+  signal start_trig  : std_logic;
+  signal led_out     : std_logic_vector(11 downto 0);
+  signal fault_sum   : std_logic;
+
+Finish the merge:
+
+$ git add source/module.vhd
+$ git commit
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Branching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Branching in git is relatively cheap and easy. Many common workflows involve 
+creating a new branch for each new feature or bug fix that you write, and
+merging the branch back into the main trunk once the change is neatly wrapped
+up. 
+
+To create a new branch called "newbranch" use:
+
+$ git checkout -b newbranch
+
+You will now be on the new feature branch, and any commits you make will be on
+newbranch. 
+
+When you are ready to merge the new feature branch back into master, use the
+following commands to go to the master branch, merge in the changes from
+newbranch, and then delete the finished branch. 
+
+$ git checkout master
+$ git merge branchname 
+$ git branch -d branchname
+
+
+Other useful commands for working with branches:
+
+Switch branch:
+$ git checkout branch_to_switch_to
+
+List all local branches:
+$ git branch 
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Resources
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Git Book (https://git-scm.com/book/en/v2) 
+A great starting point and reference. I strongly recommend reading the section
+on "Git Basics" for anyone who is not yet familiar with git:
+https://git-scm.com/book/en/v2/Getting-Started-Git-Basics
+
+
+Git Immersion (http://gitimmersion.com/)
+An excellent tutorial on git. If you follow through the steps and finish the
+tutorial you will end up with a pretty solid understanding of git.
+
+
