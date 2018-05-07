@@ -208,9 +208,7 @@ This workflow is intended to allow the implementation of many features/changes, 
 
 2) Make that branch available to other developers
    - push new branch to remote repository for first time:
-      $ git push origin feature/a_feature_branch
-   - Set upstream branch:
-      $ git branch -u origin/feature/a_feature_branch feature/a_feature_branch
+      $ git push -u origin feature/a_feature_branch
    - NOTE - other developers will have to checkout the new branch before it will appear in "git branch" by entering "git checkout feature/a_feature_branch"
 
 3) Develop new feature in that branch (feature/a_feature_branch)

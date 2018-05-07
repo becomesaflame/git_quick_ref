@@ -94,7 +94,7 @@ commits across different branches.
 To set your "git hist" alias, copy and paste the following command. You only
 need to do this once. 
 
-$ git config --global alias.hist "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit --date=relative --all"
+$ git config --global alias.hist "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=short --all"
 
 After you have set that alias, you can check your commit history using:
 
