@@ -93,6 +93,11 @@ Tips & Tricks
       - do "git repack -a -d" afterwards
 -- If files have gotten their line endings messed up:
    $ dos2unix <filename>
+-- Update another branch without checking it out
+   - note that this fails if a fast-forward is not possible
+   $ git fetch <remote> <sourceBranch>:<destinationBranch> 
+      eg.
+   $ git fetch origin master:master
 
 Tags:
 -- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
@@ -100,6 +105,8 @@ Tags:
    $ git tag -a <tagname> -m <msg> 
    Push annotated tags:
    $ git push --follow-tags
+   Show message for annotated tag:
+   $ git tag -ln <tagname>
 
 Working with blobs/objects:
 -- 
@@ -117,7 +124,7 @@ Working with branches
    - Then create and check out your new branch
    $ git checkout -b <newbranch>
 -- Show branches (indicates which branch you're on):
-   $ git branch
+   $ git branch -a
 -- Switch between branches:
    $ git checkout <newbranch>
 -- Update branch with changes made in master branch:
@@ -134,9 +141,7 @@ Working with branches
 
 -- If you want a new branch to be tracked in the remote repository:
    - push new branch to remote repository for first time:
-      $ git push origin <newbranch>
-   - Set upstream branch:
-      $ git branch -u origin/<newbranch> <newbranch>
+      $ git push -u origin <newbranch>
    - pull new branch from remote repository for first time on a different machine:
       $ git pull
       $ git checkout <newbranch>
