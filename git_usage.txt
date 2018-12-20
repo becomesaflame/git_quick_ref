@@ -98,6 +98,8 @@ Tips & Tricks
    $ git fetch <remote> <sourceBranch>:<destinationBranch> 
       eg.
    $ git fetch origin master:master
+   - Moving branch-b to point to branch-a (forced) without checking it out:
+   $ git branch -f branch-b branch-a
 
 Tags:
 -- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
