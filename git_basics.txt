@@ -180,6 +180,9 @@ $ git checkout -b newbranch
 You will now be on the new feature branch, and any commits you make will be on
 newbranch. 
 
+If new work is committed to the master branch, you may want to update your branch to incorporate that work. You can do this by merging master into your branch:
+$ git merge master
+
 When you are ready to merge the new feature branch back into master, use the
 following commands to go to the master branch, merge in the changes from
 newbranch, and then delete the finished branch. 
@@ -194,8 +197,8 @@ Other useful commands for working with branches:
 Switch branch:
 $ git checkout branch_to_switch_to
 
-List all local branches:
-$ git branch 
+List all branches:
+$ git branch -a
 
 
 
