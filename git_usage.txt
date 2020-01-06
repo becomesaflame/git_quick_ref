@@ -100,6 +100,10 @@ Tips & Tricks
    $ git fetch origin master:master
    - Moving branch-b to point to branch-a (forced) without checking it out:
    $ git branch -f branch-b branch-a
+-- Find history of a deleted file:
+   `git log --full-history -- <filename>`
+-- Find original author of a file:
+   `find . -type f -exec git log --reverse --format="{} %cn" -1 {} \;`
 
 Tags:
 -- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
@@ -209,7 +213,6 @@ Feature branch workflow
 This workflow is intended to allow the implementation of many features/changes, any of which might be approved to be put into a future build.
 
 1) Create a new branch with prefix "feature/" (feature/a_feature_branch) off of the most recently released code (master)
-   - if it is a safety critical fix, prefix the branch name with "feature/SAFETY_CRITICAL/"
    $ git checkout master
    $ git checkout -b feature/a_feature_branch
 
