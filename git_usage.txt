@@ -1,4 +1,4 @@
-Most basic workflow:
+# Most basic workflow:
    $ git pull
    <Make changes>
    $ git status
@@ -6,7 +6,7 @@ Most basic workflow:
    $ git pull
    $ git push
 
-Common Commands (Quick Ref)
+# Common Commands (Quick Ref)
 -- push file from local to remote
    $ git push
 -- get latest from remote
@@ -46,9 +46,9 @@ Common Commands (Quick Ref)
 -- Add files to revision control
    $ git add <filename or dir/*>
    
-Tips & Tricks
--- Create bash alias in c/users/<username>/.bashrc
-   $ alias <aliasname>='cd /c/rest/of/the/path'
+# Tips & Tricks
+-- Create bash alias in ~/.bashrc
+   $ alias <aliasname>='<command>'
 -- Interactively stage specific changes
    $ git add -p [filename]
    $ git add -u -p 
@@ -81,16 +81,6 @@ Tips & Tricks
    $ git ls-files --others -i --exclude-standard
 -- Show all changes in all commits for a specific file:
    $ git log -p --word-diff=color <filename>
--- "git push" shows "fatal: bad object <sha>" error and fails to push
-   - try doing:
-   $ git fsck --full
-   - for push, use:
-   $ git push -v
-   - can also try repacking objects:
-   $ git repack -a -d
-   - If none of that works you can pull in pack files from a good repo:
-      - http://git.661346.n2.nabble.com/quot-failed-to-read-delta-base-object-at-quot-td781956.html
-      - do "git repack -a -d" afterwards
 -- If files have gotten their line endings messed up:
    $ dos2unix <filename>
 -- Update another branch without checking it out
@@ -104,6 +94,23 @@ Tips & Tricks
    `git log --full-history -- <filename>`
 -- Find original author of a file:
    `find . -type f -exec git log --reverse --format="{} %cn" -1 {} \;`
+-- View log for lines of a file: 
+   `git log -L 152,173:<filename>`
+   `git log -L 152,+21:<filename>`
+
+# Broken Repos
+-- Fix git remote HEAD is dangling error due to changing GitHub default branch
+   `git remote set-head origin -a`
+-- "git push" shows "fatal: bad object <sha>" error and fails to push
+   - try doing:
+   $ git fsck --full
+   - for push, use:
+   $ git push -v
+   - can also try repacking objects:
+   $ git repack -a -d
+   - If none of that works you can pull in pack files from a good repo:
+      - http://git.661346.n2.nabble.com/quot-failed-to-read-delta-base-object-at-quot-td781956.html
+      - do "git repack -a -d" afterwards
 
 Tags:
 -- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
@@ -238,3 +245,13 @@ This workflow is intended to allow the implementation of many features/changes, 
 7) When release goes out to PDM, merge release branch (release/117) to master  
    $ git checkout master
    $ git merge release/117
+
+
+# Error tracing and debug
+
+-- Enable Network Tracing
+   $ GIT_CURL_VERBOSE=true git <command>
+-- Enable git command tracing
+   $ GIT_TRACE=true git <command>
+-- Time a git command
+   $ GIT_TRACE_PERFORMANCE=true git <command>
