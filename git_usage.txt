@@ -45,6 +45,8 @@
    $ git revert <Commit number>
 -- Add files to revision control
    $ git add <filename or dir/*>
+-- Find most recent common ancestor between two branches
+   $ git merge-base <commit1> <commit2>
    
 # Tips & Tricks
 -- Create bash alias in ~/.bashrc
@@ -97,8 +99,14 @@
 -- View log for lines of a file: 
    `git log -L 152,173:<filename>`
    `git log -L 152,+21:<filename>`
+-- Revert all changes since `<commit>`
+   Make note of commit hash that you're currently on
+   `git reset --hard <commit>`
+   `git reset --soft <starting commit>`
+   `git commit -m "Reverted all commits since <commit>"`
 
-# Broken Repos
+
+# Troubleshooting
 -- Fix git remote HEAD is dangling error due to changing GitHub default branch
    `git remote set-head origin -a`
 -- "git push" shows "fatal: bad object <sha>" error and fails to push
@@ -111,8 +119,17 @@
    - If none of that works you can pull in pack files from a good repo:
       - http://git.661346.n2.nabble.com/quot-failed-to-read-delta-base-object-at-quot-td781956.html
       - do "git repack -a -d" afterwards
+-- Unlink of file failed
+   ```
+   $ git pull
+   ...
+   Unlink of file '.git/objects/pack/pack-1d275c4cae147e822fb5161f06139a145e48b67e.idx' failed. Should I try again? (y/n)
+   ```
 
-Tags:
+   Solution: 
+   `$ git gc --force`
+
+#Tags:
 -- Always use annotated tags instead of lightweight tags (lightweight tags cannot be shared)
    Create annotated tag:
    $ git tag -a <tagname> -m <msg> 
@@ -121,7 +138,7 @@ Tags:
    Show message for annotated tag:
    $ git tag -ln <tagname>
 
-Working with blobs/objects:
+# Working with blobs/objects:
 -- 
    $ git read-tree <SHA>
 -- Show object type
@@ -130,7 +147,7 @@ Working with blobs/objects:
    $ git cat-file -p <SHA>
    
 
-Working with branches
+# Working with branches
 -- Create a new branch:
    - First check out the branch you want to use as a starting point (probably master):
    $ git checkout <starting_branch> 
@@ -185,7 +202,7 @@ Working with branches
       $ git checkout <newname>
 
 
-Setup
+# Setup
 --Configuration
    Configure git to hide untracked files in "git status":
    git config --global status.showuntrackedfiles no
@@ -216,7 +233,7 @@ Setup
       $ git checkout -f -t origin/master 
 
 
-Feature branch workflow 
+# Feature branch workflow 
 This workflow is intended to allow the implementation of many features/changes, any of which might be approved to be put into a future build.
 
 1) Create a new branch with prefix "feature/" (feature/a_feature_branch) off of the most recently released code (master)
